@@ -82,19 +82,24 @@ d3.select('svg').on('click', function() {
 });
 
 var render = function() {
-  d3.select('#points').html('');
+  // d3.select('#points').html('');
   // since no circles exist,
   // we need to select('svg') so that
   // d3 knows where to append the new circles
-  d3.select('#points')
+  var circles = d3
+    .select('#points')
     .selectAll('circle')
     // attach the data as before
-    .data(runs)
-    // find the data objects that have not yet
-    // been attached to visual elements
+    .data(runs, function(datum) {
+      return datum.id;
+    });
+  // find the data objects that have not yet
+  // been attached to visual elements
+  circles
     .enter()
     // for each data object that hasn't been attached;
     .append('circle');
+  circles.exit().remove();
 
   d3.selectAll('circle').attr('cy', function(datum, index) {
     return yScale(datum.distance);
