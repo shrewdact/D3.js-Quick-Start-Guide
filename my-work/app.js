@@ -57,13 +57,22 @@ var formatTime = d3.timeFormat('%B%e, %Y at %-I:%M%p');
 //this format matches our data in the runs array
 console.log(formatTime(new Date()));
 
-d3.selectAll('circle')
+// d3.selectAll('circle')
+//   .data(runs)
+//   .attr('cy', function(datum, index) {
+//     return yScale(datum.distance);
+//   });
+
+d3.select('svg')
+  .selectAll('circle') //D3 knows what elements to bind the various objects in the runs array to.
   .data(runs)
-  .attr('cy', function(datum, index) {
-    return yScale(datum.distance);
-  });
-  
-d3.selectAll('circle')
-  .attr('cx', function(datum, index) {
-    return xScale(parseTime(datum.date));
-  });
+  .enter()
+  .append('circle');
+
+d3.selectAll('circle').attr('cy', function(datum, index) {
+  return yScale(datum.distance);
+});
+
+d3.selectAll('circle').attr('cx', function(datum, index) {
+  return xScale(parseTime(datum.date));
+});
