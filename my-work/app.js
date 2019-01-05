@@ -99,6 +99,7 @@ var render = function() {
     return xScale(parseTime(datum.date));
   });
 
+  /** delete click handler  */
   d3.selectAll('circle').on('click', function(datum, index) {
     // console.log(datum)
     //stop click event from propagating to
@@ -113,6 +114,17 @@ var render = function() {
     render(); //re-render dots
     createTable(); //re-render table
   });
+
+  /** drag click handler  */
+  var drag = function(datum) {
+    var x = d3.event.x;
+    var y = d3.event.y;
+    d3.select(this).attr('cx', x);
+    d3.select(this).attr('cy', y);
+  };
+
+  var dragBehavior = d3.drag().on('drag', drag);
+  d3.selectAll('circle').call(dragBehavior);
 };
 
 render();
