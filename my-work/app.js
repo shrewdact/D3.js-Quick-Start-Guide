@@ -20,7 +20,7 @@ var runs = [
 ];
 
 // set dimensions of outer SVG
-d3.select('svg')
+d3.select('#container')
   .style('width', WIDTH)
   .style('height', HEIGHT);
 
@@ -50,7 +50,7 @@ var yDomain = d3.extent(runs, function(datum, index) {
 yScale.domain(yDomain); // set domain of yScale to min/max values created by d3.extent in the last step
 
 /** svg click handler */
-d3.select('svg').on('click', function() {
+d3.select('#container').on('click', function() {
   // gets the x position of the mouse relative to the svg element
   var x = d3.event.offsetX;
   // gets the y position of the mouse relative to the svg element
@@ -155,13 +155,13 @@ var render = function() {
 render();
 
 var bottomAxis = d3.axisBottom(xScale);
-d3.select('svg')
+d3.select('#container')
   .append('g')
   .attr('id', 'x-axis')
   .call(bottomAxis)
   .attr('transform', 'translate(0,' + HEIGHT + ')');
 var leftAxis = d3.axisLeft(yScale);
-d3.select('svg')
+d3.select('#container')
   .append('g')
   .attr('id', 'y-axis')
   // no need to transform, since it's placed correctly initially
@@ -193,4 +193,4 @@ var zoomCallback = function() {
 };
 
 var zoom = d3.zoom().on('zoom', zoomCallback);
-d3.select('svg').call(zoom);
+d3.select('#container').call(zoom);

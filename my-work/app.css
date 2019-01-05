@@ -8,10 +8,10 @@ circle:hover {
   fill: blue;
 }
 circle:active {
-  fill:red
+  fill: red;
 }
 
-svg {
+#container{
   /* border: 1px solid black; */
   overflow: visible;
   margin-bottom: 50px;
