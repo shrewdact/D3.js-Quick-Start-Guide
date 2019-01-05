@@ -19,70 +19,93 @@ var runs = [
   }
 ];
 
+// set dimensions of outer SVG
 d3.select('svg')
   .style('width', WIDTH)
   .style('height', HEIGHT);
 
-var yScale = d3.scaleLinear(); // create the scale
-
-// scaleTime maps date values with numeric visual points.
-// HEIGHT corresponds to min data value
-yScale.range([HEIGHT, 0]);
-var yMin = d3.min(runs, function(datum, index) {
-  // compare distance properties of each item in the data array
-  return datum.distance;
-});
-
-var yMax = d3.max(runs, function(datum, index) {
-  // compare distance properties of each item in the data array
-  return datum.distance;
-});
-
-// now that we have the min/max of the data set for distance,
-// we can use those values for the yScale domain
-yScale.domain([yMin, yMax]);
-
-var xScale = d3.scaleTime();
-xScale.range([0, WIDTH]);
-xScale.domain([new Date('2017-10-1'), new Date('2017-10-31')]);
-// console.log(xScale(new Date('2017-10-28')));
-// console.log(xScale.invert(400));
-
-//this format matches our data in the runs array
 // https://github.com/d3/d3-time-format#locale_format
-var parseTime = d3.timeParse('%B%e, %Y at %-I:%M%p');
-console.log(parseTime('October 3, 2017 at 6:00PM'));
+var parseTime = d3.timeParse('%B%e, %Y at %-I:%M%p'); //use this to convert strings to dates
+var formatTime = d3.timeFormat("%B%e, %Y at %-I:%M%p");
+var xScale = d3.scaleTime(); //create the scale used to convert dates to x position values
+xScale.range([0,WIDTH]); //set visual range of xScale to be 0 -> 800
+var xDomain = d3.extent(runs, function(datum, index){ //create array containing min/max date values for run data
+    return parseTime(datum.date); //use parseTime to convert string data value to data object
+});
+xScale.domain(xDomain);//set domain of xScale to min/max values created by d3.extent in last step
 
-var formatTime = d3.timeFormat('%B%e, %Y at %-I:%M%p');
-//this format matches our data in the runs array
-console.log(formatTime(new Date()));
+var yScale = d3.scaleLinear(); // create the scale used to convert distances run to y position values
 
-// d3.selectAll('circle')
-//   .data(runs)
-//   .attr('cy', function(datum, index) {
-//     return yScale(datum.distance);
-//   });
+// set the visual range to 600 -> 0
+// remember 600 will map to a low run distance value and 0 will map to high run distance value
+// we do this because y starts at 0 at the top of the SVG and increases in values as we move down the SVG
+yScale.range([HEIGHT, 0]);
 
-d3.select('svg')
-  .selectAll('circle') //D3 knows what elements to bind the various objects in the runs array to.
-  .data(runs)
-  .enter() // finds the run objects that haven't been bound to any circle elements yet
-  .append('circle');
-
-d3.selectAll('circle').attr('cy', function(datum, index) {
-  return yScale(datum.distance);
+// create array containing min/max distance values for run data
+var yDomain = d3.extent(runs, function(datum, index) {
+  return datum.distance; // set domain of yScale to min/max values created by d3.extent in the last step
 });
 
-d3.selectAll('circle').attr('cx', function(datum, index) {
-  return xScale(parseTime(datum.date));
+yScale.domain(yDomain); // set domain of yScale to min/max values created by d3.extent in the last step
+
+
+d3.select('svg').on('click', function() {
+  // gets the x position of the mouse relative to the svg element
+  var x = d3.event.offsetX;
+  // gets the y position of the mouse relative to the svg element
+  var y = d3.event.offsetY;
+
+  // get a date value from the visual point that we clicked on
+  var date = xScale.invert(x);
+
+  // get a numeric distance value from
+  // the visual point that we clicked on
+  var distance = yScale.invert(y);
+
+  // create a new "run" object
+  var newRun = {
+    // generate a new id by adding 1 to the last run's id
+    id: runs[runs.length - 1].id + 1,
+    date: formatTime(date),
+    distance: distance // add the distance
+  };
+
+  runs.push(newRun); // push the new run onto the runs array
+
+  createTable(); // render the table
+  render(); 
 });
+
+var render = function() {
+  // since no circles exist,
+  // we need to select('svg') so that
+  // d3 knows where to append the new circles
+  d3.select('svg')
+    .selectAll('circle')
+    // attach the data as before
+    .data(runs)
+    // find the data objects that have not yet
+    // been attached to visual elements
+    .enter()
+    // for each data object that hasn't been attached;
+    .append('circle');
+
+  d3.selectAll('circle').attr('cy', function(datum, index) {
+    return yScale(datum.distance);
+  });
+
+  d3.selectAll('circle').attr('cx', function(datum, index) {
+    return xScale(parseTime(datum.date));
+  });
+};
+
+render();
 
 var bottomAxis = d3.axisBottom(xScale);
-
 d3.select('svg')
-  .append('g') // put everything inside a group
-  .call(bottomAxis) // generate the axis within the group
-  // move it to the bottom
+  .append('g')
+  .attr('id', 'x-axis')
+  .call(bottomAxis)
   .attr('transform', 'translate(0,' + HEIGHT + ')');
 
 var leftAxis = d3.axisLeft(yScale);
@@ -92,6 +115,8 @@ d3.select('svg')
   .call(leftAxis);
 
 var createTable = function() {
+  // clear out all rows from the table
+  d3.select('tbody').html('');
   for (var i = 0; i < runs.length; i++) {
     var row = d3.select('tbody').append('tr');
     row.append('td').html(runs[i].id);
