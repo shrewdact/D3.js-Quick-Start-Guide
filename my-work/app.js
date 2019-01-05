@@ -28,5 +28,6 @@ var yScale = d3.scaleLinear(); // create the scale
 yScale.range([HEIGHT, 0]);
 yScale.domain([0, 10]);
 
-// console.log(yScale(5));
-console.log(yScale.invert(450))
+d3.selectAll('circle').data(runs).attr('cy',function(datum, index){
+  return yScale(datum.distance);
+});
