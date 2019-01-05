@@ -26,13 +26,14 @@ d3.select('svg')
 
 // https://github.com/d3/d3-time-format#locale_format
 var parseTime = d3.timeParse('%B%e, %Y at %-I:%M%p'); //use this to convert strings to dates
-var formatTime = d3.timeFormat("%B%e, %Y at %-I:%M%p");
+var formatTime = d3.timeFormat('%B%e, %Y at %-I:%M%p');
 var xScale = d3.scaleTime(); //create the scale used to convert dates to x position values
-xScale.range([0,WIDTH]); //set visual range of xScale to be 0 -> 800
-var xDomain = d3.extent(runs, function(datum, index){ //create array containing min/max date values for run data
-    return parseTime(datum.date); //use parseTime to convert string data value to data object
+xScale.range([0, WIDTH]); //set visual range of xScale to be 0 -> 800
+var xDomain = d3.extent(runs, function(datum, index) {
+  //create array containing min/max date values for run data
+  return parseTime(datum.date); //use parseTime to convert string data value to data object
 });
-xScale.domain(xDomain);//set domain of xScale to min/max values created by d3.extent in last step
+xScale.domain(xDomain); //set domain of xScale to min/max values created by d3.extent in last step
 
 var yScale = d3.scaleLinear(); // create the scale used to convert distances run to y position values
 
@@ -47,7 +48,6 @@ var yDomain = d3.extent(runs, function(datum, index) {
 });
 
 yScale.domain(yDomain); // set domain of yScale to min/max values created by d3.extent in the last step
-
 
 d3.select('svg').on('click', function() {
   // gets the x position of the mouse relative to the svg element
@@ -65,7 +65,7 @@ d3.select('svg').on('click', function() {
   // create a new "run" object
   var newRun = {
     // generate a new id by adding 1 to the last run's id
-    id: runs[runs.length - 1].id + 1,
+    id: runs.length > 0 ? runs[runs.length - 1].id + 1 : 1,
     date: formatTime(date),
     distance: distance // add the distance
   };
@@ -73,14 +73,15 @@ d3.select('svg').on('click', function() {
   runs.push(newRun); // push the new run onto the runs array
 
   createTable(); // render the table
-  render(); 
+  render();
 });
 
 var render = function() {
+  d3.select('#points').html('');
   // since no circles exist,
   // we need to select('svg') so that
   // d3 knows where to append the new circles
-  d3.select('svg')
+  d3.select('#points')
     .selectAll('circle')
     // attach the data as before
     .data(runs)
@@ -96,6 +97,21 @@ var render = function() {
 
   d3.selectAll('circle').attr('cx', function(datum, index) {
     return xScale(parseTime(datum.date));
+  });
+
+  d3.selectAll('circle').on('click', function(datum, index) {
+    // console.log(datum)
+    //stop click event from propagating to
+    //the SVG element and creating a run
+    d3.event.stopPropagation();
+    //create a new array that has removed the run
+    //with the correct id. Set it to the runs var
+    runs = runs.filter(function(run, index) {
+      return run.id != datum.id;
+    });
+    console.log(runs);
+    render(); //re-render dots
+    createTable(); //re-render table
   });
 };
 

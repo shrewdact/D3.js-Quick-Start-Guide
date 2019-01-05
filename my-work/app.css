@@ -1,11 +1,11 @@
 circle {
-  /* fill:red;
-  stroke:blue;
-  fill-opacity: 0.5;
-  stroke-opacity: 0.1;
-  transform: rotate(45deg) scale(0.4) translate(155px, 1px); */
   r: 5;
   fill: black;
+  transition: r0.5s linear, fill 0.5s linear;
+}
+circle:hover {
+  r:10;
+  fill:blue
 }
 
 svg {
