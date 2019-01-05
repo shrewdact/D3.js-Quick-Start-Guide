@@ -66,7 +66,7 @@ console.log(formatTime(new Date()));
 d3.select('svg')
   .selectAll('circle') //D3 knows what elements to bind the various objects in the runs array to.
   .data(runs)
-  .enter()
+  .enter() // finds the run objects that haven't been bound to any circle elements yet
   .append('circle');
 
 d3.selectAll('circle').attr('cy', function(datum, index) {
@@ -76,3 +76,17 @@ d3.selectAll('circle').attr('cy', function(datum, index) {
 d3.selectAll('circle').attr('cx', function(datum, index) {
   return xScale(parseTime(datum.date));
 });
+
+var bottomAxis = d3.axisBottom(xScale);
+
+d3.select('svg')
+  .append('g') // put everything inside a group
+  .call(bottomAxis) // generate the axis within the group
+  // move it to the bottom
+  .attr('transform', 'translate(0,' + HEIGHT + ')');
+
+var leftAxis = d3.axisLeft(yScale);
+d3.select('svg')
+  .append('g')
+  // no need to transform, since it's placed correctly initially
+  .call(leftAxis);
