@@ -116,6 +116,18 @@ var render = function() {
   });
 
   /** drag click handler  */
+
+  var dragEnd = function(datum) {
+    var x = d3.event.x;
+    var y = d3.event.y;
+    var date = xScale.invert(x);
+    var distance = yScale.invert(y);
+
+    datum.date = formatTime(date);
+    datum.distance = distance;
+    createTable();
+  };
+
   var drag = function(datum) {
     var x = d3.event.x;
     var y = d3.event.y;
@@ -123,7 +135,10 @@ var render = function() {
     d3.select(this).attr('cy', y);
   };
 
-  var dragBehavior = d3.drag().on('drag', drag);
+  var dragBehavior = d3
+    .drag()
+    .on('drag', drag)
+    .on('end', dragEnd);
   d3.selectAll('circle').call(dragBehavior);
 };
 

@@ -4,8 +4,11 @@ circle {
   transition: r0.5s linear, fill 0.5s linear;
 }
 circle:hover {
-  r:10;
-  fill:blue
+  r: 10;
+  fill: blue;
+}
+circle:active {
+  fill:red
 }
 
 svg {
