@@ -9,10 +9,23 @@ circle {
 }
 
 svg {
-  border: 1px solid black;
+  /* border: 1px solid black; */
   overflow: visible;
+  margin-bottom: 50px;
 }
 
 body {
   margin: 20px 40px;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-spacing: 0;
+}
+th,
+td {
+  padding: 10px;
+  text-align: center;
 }
