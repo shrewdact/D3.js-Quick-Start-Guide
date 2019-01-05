@@ -49,11 +49,16 @@ var yDomain = d3.extent(runs, function(datum, index) {
 
 yScale.domain(yDomain); // set domain of yScale to min/max values created by d3.extent in the last step
 
+/** svg click handler */
 d3.select('svg').on('click', function() {
   // gets the x position of the mouse relative to the svg element
   var x = d3.event.offsetX;
   // gets the y position of the mouse relative to the svg element
   var y = d3.event.offsetY;
+  if (lastTransform !== null) {
+    x = lastTransform.invertX(d3.event.offsetX);
+    y = lastTransform.invertY(d3.event.offsetY);
+  }
 
   // get a date value from the visual point that we clicked on
   var date = xScale.invert(x);
@@ -170,7 +175,9 @@ var createTable = function() {
 
 createTable();
 
+var lastTransform = null;
 var zoomCallback = function() {
+  lastTransform = d3.event.transform;
   d3.select('#points').attr('transform', d3.event.transform);
   d3.select('#x-axis').call(
     bottomAxis.scale(d3.event.transform.rescaleX(xScale))
