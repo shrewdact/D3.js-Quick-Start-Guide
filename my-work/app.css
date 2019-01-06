@@ -5,3 +5,13 @@ rect {
   stroke: white;
   stroke-width: 1px;
 }
+
+svg {
+  overflow: visible;
+  margin-left: 20px;
+}
+
+#bottom-axis text {
+  transform: rotate(45deg);
+  text-anchor: start;
+}
