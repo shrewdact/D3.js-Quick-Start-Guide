@@ -18,6 +18,13 @@ colorScale.domain(
   })
 );
 
+d3.select('svg')
+  .attr('width', WIDTH)
+  .attr('height',HEIGHT);
+var container = d3
+  .select('g') //add this line and the next:
+  .attr('transform', 'translate(' + (WIDTH / 2) + ',' + (HEIGHT / 2) + ')'); //add this line
+
 var arc = d3
   .arc()
   .innerRadius(0) //to make this a donut graph, adjust this value
