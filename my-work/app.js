@@ -13,3 +13,12 @@ var nodesData = [
   { name: 'Frank' },
   { name: 'Cricket' }
 ];
+
+var linksData =[
+  {source: "Charlie", target: "Mac"},
+  {source: "Dennis", target: "Mac"},
+  {source: "Dennis", target: "Dee"},
+  {source: "Dee", target: "Mac"},
+  {source: "Dee", target: "Frank"},
+  {source: "Cricket", target: "Dee"},
+]
