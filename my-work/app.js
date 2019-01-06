@@ -29,3 +29,10 @@ var nodes = d3
   .data(nodesData)
   .enter()
   .append('circle');
+
+var links = d3
+  .select('#links')
+  .selectAll('line')
+  .data(linksData)
+  .enter()
+  .append('line');
