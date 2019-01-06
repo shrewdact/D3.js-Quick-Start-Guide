@@ -36,3 +36,29 @@ var links = d3
   .data(linksData)
   .enter()
   .append('line');
+
+d3.forceSimulation()
+  .nodes(nodesData)
+  .on('tick', function() {
+    nodes
+      .attr('cx', function(datum) {
+        return datum.x;
+      })
+      .attr('cy', function(datum) {
+        return datum.y;
+      });
+
+    links
+      .attr('x1', function(datum) {
+        return datum.source.x;
+      })
+      .attr('y1', function(datum) {
+        return datum.source.y;
+      })
+      .attr('x2', function(datum) {
+        return datum.target.x;
+      })
+      .attr('y2', function(datum) {
+        return datum.target.y;
+      });
+  });
