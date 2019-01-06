@@ -1,51 +1,32 @@
-var WIDTH = 800;
-var HEIGHT = 600;
+var WIDTH = 360;
+var HEIGHT = 360;
+var radius = Math.min(WIDTH, HEIGHT) / 2;
 
-d3.select('svg')
-  .style('width', WIDTH)
-  .style('height', HEIGHT);
+var dataset = [
+  { label: 'Bob', count: 10 },
+  { label: 'Sally', count: 20 },
+  { label: 'Matt', count: 30 },
+  { label: 'Jane', count: 40 }
+];
 
-// AJAX callback
-d3.json('data.json').then(function(data) {
-  d3.select('svg')
-    .selectAll('rect')
-    .data(data)
-    .enter()
-    .append('rect');
+console.log(dataset);
 
-  var yMin = d3.min(data, function(datum, index) {
-    return datum.count;
-  });
+var mapper = d3.scaleOrdinal();
 
-  var yMax = d3.max(data, function(datum, index) {
-    return datum.count;
-  });
+mapper.range([45, 63, 400]); // list each value for ordinal scales,not just min/max
+mapper.domain(['Bob', 'Sally', 'Zagthor']); // list each value for ordinal scales, not just min/max
 
-  var yScale = d3.scaleLinear();
-  yScale.range([HEIGHT, 0]);
-  var yMin = d3.min(data, function(datum, index) {
-    return datum.count;
-  });
+// console.log(mapper('Bob'));
+// console.log(mapper('Sally'));
+// console.log(mapper('Zagthor'));
 
-  var yMax = d3.max(data, function(datum, index) {
-    return datum.count;
-  });
-  yScale.domain([yMin - 1, yMax]);
+var colorScale = d3.scaleOrdinal();
+colorScale.range(d3.schemeCategory10);
 
-  d3.selectAll('rect').attr('height', function(datum, index) {
-    return HEIGHT - yScale(datum.count);
-  });
+colorScale.domain(
+  dataset.map(function(element) {
+    return element.label;
+  })
+);
 
-  var xScale = d3.scaleLinear();
-  xScale.range([0, WIDTH]);
-  xScale.domain([0, data.length]);
-  d3.selectAll('rect').attr('x', function(datum, index) {
-    return xScale(index);
-  });
 
-  d3.selectAll('rect').attr('y', function(datum, index) {
-    return yScale(datum.count);
-  });
-
-  d3.selectAll('rect').attr('width', WIDTH / data.length);
-});
