@@ -48,39 +48,4 @@ d3.json('data.json').then(function(data) {
   });
 
   d3.selectAll('rect').attr('width', WIDTH / data.length);
-
-  var yDomain = d3.extent(data, function(datum, index) {
-    return datum.count;
-  });
-
-  var colorScale = d3.scaleLinear();
-  colorScale.domain(yDomain);
-  colorScale.range(['#00cc00', 'blue']);
-  d3.selectAll('rect').attr('fill', function(datum, index) {
-    return colorScale(datum.count);
-  });
-
-  /** leftAxis */
-  var leftAxis = d3.axisLeft(yScale);
-
-  d3.select('svg')
-    .append('g')
-    .attr('id', 'left-axis')
-    .call(leftAxis);
-
-  /** bottomAxis */
-  var skillScale = d3.scaleBand();
-  var skillDomain = data.map(function(skill) {
-    return skill.name;
-  });
-
-  skillScale.range([0, WIDTH]);
-  skillScale.domain(skillDomain);
-
-  var bottomAxis = d3.axisBottom(skillScale);
-  d3.select('svg')
-    .append('g')
-    .attr('id', 'bottom-axis')
-    .call(bottomAxis)
-    .attr('transform', 'translate(0,' + HEIGHT + ')');
 });
