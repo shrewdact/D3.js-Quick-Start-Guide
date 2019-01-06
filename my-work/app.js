@@ -9,36 +9,34 @@ var dataset = [
   { label: 'Jane', count: 40 }
 ];
 
-console.log(dataset);
-
 var mapper = d3.scaleOrdinal();
-
-mapper.range([45, 63, 400]); // list each value for ordinal scales,not just min/max
-mapper.domain(['Bob', 'Sally', 'Zagthor']); // list each value for ordinal scales, not just min/max
-
-// console.log(mapper('Bob'));
-// console.log(mapper('Sally'));
-// console.log(mapper('Zagthor'));
-
 var colorScale = d3.scaleOrdinal();
 colorScale.range(d3.schemeCategory10);
-
 colorScale.domain(
   dataset.map(function(element) {
     return element.label;
   })
 );
 
-d3.select('svg')
-  .attr('width', WIDTH)
-  .attr('height'.HEIGHT);
+var arc = d3
+  .arc()
+  .innerRadius(0) //to make this a donut graph, adjust this value
+  .outerRadius(radius);
+
+var pie = d3
+  .pie()
+  .value(function(d) {
+    return d.count;
+  })
+  .sort(null);
 
 var path = d3
   .select('g')
   .selectAll('path')
-  .data(dataset)
+  .data(pie(dataset))
   .enter()
   .append('path')
+  .attr('d', arc)
   .attr('fill', function(d) {
-    return colorScale(d.label);
+    return colorScale(d.data.label);
   });
