@@ -29,4 +29,16 @@ colorScale.domain(
   })
 );
 
+d3.select('svg')
+  .attr('width', WIDTH)
+  .attr('height'.HEIGHT);
 
+var path = d3
+  .select('g')
+  .selectAll('path')
+  .data(dataset)
+  .enter()
+  .append('path')
+  .attr('fill', function(d) {
+    return colorScale(d.label);
+  });
