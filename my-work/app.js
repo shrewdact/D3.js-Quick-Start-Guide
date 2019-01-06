@@ -39,6 +39,11 @@ var links = d3
 
 d3.forceSimulation()
   .nodes(nodesData)
+  .force("center_force", d3.forceCenter(WIDTH /2, HEIGHT /2))
+  .force("charge_force", d3.forceManyBody())
+  .force("links", d3.forceLink(linksData).id(function(datum){
+    return datum.name
+  }).distance(160))
   .on('tick', function() {
     nodes
       .attr('cx', function(datum) {
