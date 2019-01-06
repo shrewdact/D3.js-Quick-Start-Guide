@@ -14,11 +14,18 @@ var nodesData = [
   { name: 'Cricket' }
 ];
 
-var linksData =[
-  {source: "Charlie", target: "Mac"},
-  {source: "Dennis", target: "Mac"},
-  {source: "Dennis", target: "Dee"},
-  {source: "Dee", target: "Mac"},
-  {source: "Dee", target: "Frank"},
-  {source: "Cricket", target: "Dee"},
-]
+var linksData = [
+  { source: 'Charlie', target: 'Mac' },
+  { source: 'Dennis', target: 'Mac' },
+  { source: 'Dennis', target: 'Dee' },
+  { source: 'Dee', target: 'Mac' },
+  { source: 'Dee', target: 'Frank' },
+  { source: 'Cricket', target: 'Dee' }
+];
+
+var nodes = d3
+  .select('#nodes')
+  .selectAll('circle')
+  .data(nodesData)
+  .enter()
+  .append('circle');
