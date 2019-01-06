@@ -46,4 +46,6 @@ d3.json('data.json').then(function(data) {
   d3.selectAll('rect').attr('y', function(datum, index) {
     return yScale(datum.count);
   });
+
+  d3.selectAll('rect').attr('width', WIDTH / data.length);
 });
