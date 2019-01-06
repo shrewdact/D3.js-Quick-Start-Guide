@@ -3,10 +3,10 @@ var HEIGHT = 360;
 var radius = Math.min(WIDTH, HEIGHT) / 2;
 
 var dataset = [
-  { label: 'Bob', count: 10 },
-  { label: 'Sally', count: 20 },
-  { label: 'Matt', count: 30 },
-  { label: 'Jane', count: 40 }
+  { id: 1, label: 'Bob', count: 10 },
+  { id: 2, label: 'Sally', count: 20 },
+  { id: 3, label: 'Matt', count: 30 },
+  { id: 4, label: 'Jane', count: 40 }
 ];
 
 var mapper = d3.scaleOrdinal();
@@ -40,10 +40,42 @@ var pie = d3
 var path = d3
   .select('g')
   .selectAll('path')
-  .data(pie(dataset))
+  .data(pie(dataset), function(datum) {
+    return datum.data.id;
+  })
   .enter()
   .append('path')
   .attr('d', arc)
   .attr('fill', function(d) {
     return colorScale(d.data.label);
+  })
+  .each(function(d) {
+    this._current = d;
   });
+
+path.on('click', function(clickedDatum, clickedIndex) {
+  dataset = dataset.filter(function(currentDatum, currentIndex) {
+    return clickedDatum.data.id !== currentDatum.id;
+  });
+
+  path
+    .data(pie(dataset), function(datum) {
+      return datum.data.id;
+    })
+    .exit()
+    .remove();
+
+  path
+    .transition() // create the transition
+    .duration(750) // add ho long the transition takes
+    .attrTween('d', function(d) {
+      // tween the d attribute
+
+      // interpolate from what the d attribute was and what it is now
+      var interpolate = d3.interpolate(this._current, d);
+      this._current = interpolate(0); // save new value of data
+      return function(t) {
+        return arc(interpolate(t));
+      };
+    });
+});
